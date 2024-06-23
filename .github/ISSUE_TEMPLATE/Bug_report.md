@@ -29,7 +29,7 @@ have aptly described your issue in words, feel free to ignore/delete this sectio
 ```json
 (Paste the part of the config file here)
 ```
- - Please post any errors you see about MMM-Pages in the console (Hit F12 > Console when the Magic Mirror window is focused), or write **None** if there aren't any:
+ - Please post any errors you see about MMM-pages in the console (Hit F12 > Console when the Magic Mirror window is focused), or write **None** if there aren't any:
 ```
 ```
 **Additional context**
