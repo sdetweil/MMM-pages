@@ -33,7 +33,7 @@ one yourself!
 
 ## Installation
 
-In your terminal, go to your MagicMirror's Module folder:
+In your terminal, go to your MagicMirror's module folder:
 
 ```bash
 cd ~/MagicMirror/modules
@@ -42,7 +42,7 @@ cd ~/MagicMirror/modules
 Clone this repository:
 
 ```bash
-git clone https://github.com/sdetweil/MMM-pages.git
+git clone https://github.com/sdetweil/MMM-pages
 ```
 
 Configure the module in your config.js file.
@@ -103,7 +103,7 @@ modules: [
 ]
 ```
 and then at each module, add a classes: property to indicate the page(s) this module is supposed to appear on
-```
+```js
   { 
     module:"newsfeed",
     classes:"page1",
@@ -120,7 +120,7 @@ and then at each module, add a classes: property to indicate the page(s) this mo
 etc
 
 if u want a modules content on multiple pages the classes would list those page names
-```
+```js
   { 
     module:"newsfeed",
     classes:"page1",
@@ -155,7 +155,7 @@ if u want a modules content on multiple pages the classes would list those page 
 | `homePage`          | `int`                      | `0`                      | Which page index is the home page. If none is set, this returns to the leftmost page instead. |
 | `useLockString`     | `bool`                     | `true`                   | Whether or not to use a lock string to show or hide pages. If disabled, other modules may override when modules may be shown. _Advanced users only. Only override this if you know what you're doing._
 | `pageTimeout  `     | `[]`                       | `{pageNumber:x,timeout:nnnn}`| array of structures,  enable different timeouts for different pages
-|||| pageNumber starts at 1 for the first page, timeout is in milliseconds              
+|||| pageNumber starts at 1 for the first page, timeout is in milliseconds
 
 For the `module` configuration option, the first element of the outer array
 should consist of elements that should be on the first page. The second element
