@@ -66,7 +66,18 @@
             "hiddenPages": {
               "type": "array",
               "items": {
-                "type": "pair"
+                "type": "object",
+                "properties":{
+                  "name":{
+                    "type":"string"
+                   },
+                  "modulelist":{
+                    "type":"array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
               }
             },
             "animationTime": {
@@ -179,13 +190,28 @@
           ]
         },
         {
-          "type": "array",
+          "type":"array",
           "title": "hiddenPages",
-          "deleteCurrent": false,
           "items": [
             {
-              "key": "MMM-pages.config.hiddenPages[]",
-              "title": "hiddenPage {{idx}}"
+              "type": "section",
+              "items":[
+                {
+                  "key": "MMM-pages.config.hiddenPages[].name",
+                  "title":"page name"
+                },
+                {
+                  "key": "MMM-pages.config.hiddenPages[].modulelist",
+                  "title":"list of modules",
+                  "type":"array",
+                  "items":[
+                   {
+                    "key": "MMM-pages.config.hiddenPages[].modulelist[]",
+                    "title":"module or class name"
+                   }
+                  ]
+                }
+              ]
             }
           ]
         },
