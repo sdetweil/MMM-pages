@@ -1,8 +1,5 @@
 Module.register('MMM-Pages', {
 
-  // We require the older style of function declaration for compatibility
-  // reasons.
-
   /**
    * By default, we have don't pseudo-paginate any modules. We also exclude
    * the page indicator by default, in case people actually want to use the
@@ -27,10 +24,9 @@ Module.register('MMM-Pages', {
   /**
    * Apply any styles, if we have any.
    */
-  getStyles: function () {
+  getStyles() {
     return ['pages.css'];
   },
-
 
   /**
    * Modulo that also works with negative numbers.
@@ -38,7 +34,7 @@ Module.register('MMM-Pages', {
    * @param {number} x The dividend
    * @param {number} n The divisor
    */
-  mod: function (x, n) {
+  mod(x, n) {
     return ((x % n) + n) % n;
   },
 
@@ -46,7 +42,7 @@ Module.register('MMM-Pages', {
    * Pseudo-constructor for our module. Makes sure that values aren't negative,
    * and sets the default current page to 0.
    */
-  start: function () {
+  start() {
     // Clamp homePage value to [0, num pages).
     if (this.config.homePage >= this.config.modules.length || this.config.homePage < 0) {
       this.config.homePage = 0;
@@ -56,12 +52,12 @@ Module.register('MMM-Pages', {
 
     // Compatibility
     if (this.config.excludes.length) {
-      Log.warn('[Pages]: The config option "excludes" is deprecated. Please use "fixed" instead.');
+      Log.warn('[MMM-pages] The config option "excludes" is deprecated. Please use "fixed" instead.');
       this.config.fixed = this.config.excludes;
     }
 
     if (this.config.rotationFirstPage) {
-      Log.warn('[Pages]: The config option "rotationFirstPage" is deprecated. Please used "rotationHomePage" instead.');
+      Log.warn('[MMM-pages] The config option "rotationFirstPage" is deprecated. Please used "rotationHomePage" instead.');
       this.config.rotationHomePage = this.config.rotationFirstPage;
     }
 
@@ -71,7 +67,7 @@ Module.register('MMM-Pages', {
     this.config.rotationHomePage = Math.max(this.config.rotationHomePage, 0);
 
     if (!this.config.useLockString) {
-      Log.log('[Pages]: User opted to not use lock strings!');
+      Log.log('[MMM-pages] User opted to not use lock strings!');
     }
   },
 
@@ -93,29 +89,27 @@ Module.register('MMM-Pages', {
    * @param {string} notification the notification ID
    * @param {number|string} payload the page to change to/by
    */
-  notificationReceived: function (notification, payload) {
+  notificationReceived(notification, payload) {
     switch (notification) {
       case 'PAGE_CHANGED':
-        Log.log('[Pages]: received a notification '
-          + `to change to page ${payload} of type ${typeof payload}`);
+        Log.log(`[MMM-pages] received a notification to change to page ${payload} of type ${typeof payload}.`);
         this.curPage = payload;
         this.updatePages();
         break;
       case 'PAGE_INCREMENT':
-        Log.log('[Pages]: received a notification to increment pages!');
+        Log.log('[MMM-pages] received a notification to increment pages!');
         this.changePageBy(payload, 1);
         this.updatePages();
         break;
       case 'PAGE_DECREMENT':
-        Log.log('[Pages]: received a notification to decrement pages!');
+        Log.log('[MMM-pages] received a notification to decrement pages!');
         // We can't just pass in -payload for situations where payload is null
         // JS will coerce -payload to -0.
         this.changePageBy(payload ? -payload : payload, -1);
         this.updatePages();
         break;
       case 'DOM_OBJECTS_CREATED':
-        Log.log('[Pages]: received that all objects are created;'
-          + ' will now hide things!');
+        Log.log('[MMM-pages] received that all objects are created; will now hide things!');
         this.sendNotification('MAX_PAGES_CHANGED', this.config.modules.length);
         this.sendNotification('NEW_PAGE', this.curPage);
         this.animatePageChange();
@@ -134,12 +128,12 @@ Module.register('MMM-Pages', {
         this.notificationReceived('PAGE_CHANGED', this.config.homePage);
         break;
       case 'SHOW_HIDDEN_PAGE':
-        Log.log(`[Pages]: received a notification to change to the hidden page "${payload}" of type "${typeof payload}"`);
+        Log.log(`[MMM-pages] received a notification to change to the hidden page "${payload}" of type "${typeof payload}".`);
         this.setRotation(false);
         this.showHiddenPage(payload);
         break;
       case 'LEAVE_HIDDEN_PAGE':
-        Log.log("[Pages]: received a notification to leave the current hidden page ");
+        Log.log('[MMM-pages] received a notification to leave the current hidden page.');
         this.animatePageChange();
         this.setRotation(true);
         break;
@@ -157,9 +151,9 @@ Module.register('MMM-Pages', {
    * @param {number} fallback the fallback value to use. Accepts negative
    * numbers.
    */
-  changePageBy: function (amt, fallback) {
+  changePageBy(amt, fallback) {
     if (typeof amt !== 'number' && typeof fallback === 'undefined') {
-      Log.warn(`[Pages]: ${amt} is not a number!`);
+      Log.warn(`[MMM-pages] ${amt} is not a number!`);
     }
 
     if (typeof amt === 'number' && !Number.isNaN(amt)) {
@@ -179,15 +173,15 @@ Module.register('MMM-Pages', {
    * Handles hiding the current page's elements and showing the next page's
    * elements.
    */
-  updatePages: function () {
-    // Update iff there's at least one page.
+  updatePages() {
+    // Update if there's at least one page.
     if (this.config.modules.length !== 0) {
       this.animatePageChange();
       if (!this.rotationPaused) {
         this.resetTimerWithDelay(0);
       }
       this.sendNotification('NEW_PAGE', this.curPage);
-    } else { Log.error("[Pages]: Pages aren't properly defined!"); }
+    } else { Log.error('[MMM-pages] Pages are not properly defined!'); }
   },
 
   /**
@@ -198,7 +192,7 @@ Module.register('MMM-Pages', {
    * @param {string} [targetPageName] the name of the hiddenPage we want to show.
    * Optional and only used when we want to switch to a hidden page
    */
-  animatePageChange: function (targetPageName) {
+  animatePageChange(targetPageName) {
     let lockStringObj = { lockString: this.identifier };
     if (!this.config.useLockString) {
       // Passing in an undefined object is equivalent to not passing it in at
@@ -220,13 +214,15 @@ Module.register('MMM-Pages', {
 
     MM.getModules()
       .exceptWithClass(modulesToShow)
-      .enumerate(module => module.hide(animationTime,()=>{},  lockStringObj));
+      .enumerate(module => module.hide(animationTime, () => {}, lockStringObj));
+
 
     // Shows all modules meant to be on the current page, after a small delay.
     setTimeout(() => {
       MM.getModules()
         .withClass(modulesToShow)
-        .enumerate(module => module.show(animationTime, ()=>{},  lockStringObj));
+        .enumerate(module => module.show(animationTime, () => {}, lockStringObj));
+
     }, animationTime);
   },
 
@@ -235,7 +231,7 @@ Module.register('MMM-Pages', {
    *
    * @param {number} delay the delay, in milliseconds.
    */
-  resetTimerWithDelay: function (delay) {
+  resetTimerWithDelay(delay) {
     if (this.config.rotationTime > 0) {
       // This timer is the auto rotate function.
       if(this.timer){
@@ -298,12 +294,12 @@ Module.register('MMM-Pages', {
    *
    * @param {boolean} isRotating the parameter, if you want to pause or resume.
    */
-  setRotation: function (isRotating) {
-    const stateBaseString = (isRotating) ? "resum" : "paus";
+  setRotation(isRotating) {
+    const stateBaseString = isRotating ? 'resum' : 'paus';
     if (isRotating === this.rotationPaused) {
-      Log.warn(`[Pages]: Was asked to ${stateBaseString}e but rotation is already ${stateBaseString}ed!`);
+      Log.warn(`[MMM-pages] was asked to ${stateBaseString}e but rotation is already ${stateBaseString}ed!`);
     } else {
-      Log.log(`[Pages]: ${stateBaseString}ing rotation`);
+      Log.log(`[MMM-pages] ${stateBaseString}ing rotation`);
       if (!isRotating) {
         
         this.timer_clear_function(this.timer);
@@ -320,12 +316,12 @@ Module.register('MMM-Pages', {
    *
    * @param {string} name the name of the hiddenPage we want to show
    */
-  showHiddenPage: function (name) {
+  showHiddenPage(name) {
     // Only proceed if the named hidden page actually exists
     if (name in this.config.hiddenPages) {
       this.animatePageChange(name);
     } else {
-      Log.error(`Hidden page "${name}" does not exist!`);
+      Log.error(`[MMM-pages] Hidden page "${name}" does not exist!`);
     }
   },
 });
