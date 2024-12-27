@@ -1,4 +1,4 @@
-Module.register('MMM-Pages', {
+Module.register('MMM-pages', {
 
   /**
    * By default, we have don't pseudo-paginate any modules. We also exclude
