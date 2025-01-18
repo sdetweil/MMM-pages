@@ -41,7 +41,7 @@ cd ~/MagicMirror/modules
 Clone this repository:
 
 ```bash
-git clone https://github.com/edward-shen/MMM-pages
+git clone https://github.com/sdetweil/MMM-pages
 ```
 
 ## Update
