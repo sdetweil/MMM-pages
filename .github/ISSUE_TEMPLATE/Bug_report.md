@@ -12,8 +12,8 @@ Steps to reproduce the behavior:
 (Please paste any information on reproducing the issue, for example:)
 
 1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
+2. Click on '...'
+3. Scroll down to '...'
 4. See error
 
 **Expected behavior**
@@ -25,7 +25,11 @@ have aptly described your issue in words, feel free to ignore/delete this sectio
 
 **Please fill out the following information;**
 
+<<<<<<< HEAD
 - Node version: [This can be obtained by running `node --version`]
+=======
+- Node version: [This can be obtained by running `node -v` in your terminal]
+>>>>>>> refs/remotes/origin/master
 - Have you updated to the latest MagicMirror core? [yes/no]
 - Please post the relevant part of your config file here:
 
@@ -35,5 +39,12 @@ have aptly described your issue in words, feel free to ignore/delete this sectio
 
 - Please post any errors you see about MMM-pages in the console (Hit F12 > Console when the MagicMirror window is focused), or write **None** if there aren't any:
 
+<<<<<<< HEAD
+=======
+```
+(Paste the error here)
+```
+
+>>>>>>> refs/remotes/origin/master
 **Additional context**
 Add any other context about the problem here.
