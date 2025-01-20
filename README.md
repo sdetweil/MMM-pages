@@ -122,6 +122,7 @@ Instead of using the module name, you can also use a class name for each page. T
         }
     },
 ```
+note:  you can name the page classname  with any name that makes sense for you. Mom, dad, weather, finances, security
 
 You have to add the class name to the config of the module you want to show on a specific page. You can even add more than one class name to show a module instance on multiple pages.
 
