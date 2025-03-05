@@ -110,6 +110,7 @@ Module.register('MMM-pages', {
         break;
       case 'DOM_OBJECTS_CREATED':
         Log.log('[MMM-pages] received that all objects are created; will now hide things!');
+        this.setRotation(true);
         this.sendNotification('MAX_PAGES_CHANGED', this.config.modules.length);
         this.sendNotification('NEW_PAGE', this.curPage);
         this.animatePageChange();
@@ -310,7 +311,7 @@ Module.register('MMM-pages', {
       Log.log(`[MMM-pages] ${stateBaseString}ing rotation`);
       if (!isRotating) {
         if(this.timer){
-          this.timer_clear_function(this.timer);
+          (this.config.pageTimeout.length ? clearTimeout : clearInterval)(this.timer);
           this.timer=null
         }
         if(this.delayTimer){
