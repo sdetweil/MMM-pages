@@ -20,6 +20,10 @@ Module.register('MMM-pages', {
     useLockString: true,
     pageTimeout: []
   },
+  inactive: false,
+  active: true, 
+  nodelay: 0,
+  savedLastPage:0,
   timer:null,
   /**
    * Apply any styles, if we have any.
@@ -48,7 +52,7 @@ Module.register('MMM-pages', {
       this.config.homePage = 0;
     }
     this.curPage = this.config.homePage;
-    this.rotationPaused = false;
+    this.rotationState= this.inactive;
 
     // Compatibility
     if (this.config.excludes.length) {
@@ -93,6 +97,7 @@ Module.register('MMM-pages', {
     switch (notification) {
       case 'PAGE_CHANGED':
         Log.log(`[MMM-pages] received a notification to change to page ${payload} of type ${typeof payload}.`);
+        this.savedLastPage = this.curPage
         this.curPage = payload;
         this.updatePages();
         break;
@@ -114,7 +119,7 @@ Module.register('MMM-pages', {
         this.sendNotification('MAX_PAGES_CHANGED', this.config.modules.length);
         this.sendNotification('NEW_PAGE', this.curPage);
         this.animatePageChange();
-        this.resetTimerWithDelay(0);
+        this.resetTimerWithDelay(this.nodelay);
         break;
       case 'QUERY_PAGE_NUMBER':
         this.sendNotification('PAGE_NUMBER_IS', this.curPage);
@@ -177,11 +182,17 @@ Module.register('MMM-pages', {
   updatePages() {
     // Update if there's at least one page.
     if (this.config.modules.length !== 0) {
-      this.animatePageChange();
-      if (!this.rotationPaused) {
-        this.resetTimerWithDelay(0);
+      if (typeof this.curPage !== 'string') {
+        this.animatePageChange();
+        if (this.rotationState == this.inactive) {
+          this.resetTimerWithDelay(this.nodelay);  // was 0
+        }
+        this.sendNotification('NEW_PAGE', this.curPage);
       }
-      this.sendNotification('NEW_PAGE', this.curPage);
+      else {
+        Log.error(`[MMM-pages] cannot change to a named page ${this.curPage}'`);
+        this.curPage = this.savedLastPage
+      }
     } else { Log.error('[MMM-pages] Pages are not properly defined!'); }
   },
 
@@ -283,6 +294,7 @@ Module.register('MMM-pages', {
       }
       const self = this;
       this.delayTimer = setTimeout(() => {
+        this.rotationState = this.active
         this.delayTimer=null
         self.timer = (this.config.pageTimeout.length?setTimeout:setInterval)(() => {
           // Inform other modules and page change.
@@ -301,15 +313,15 @@ Module.register('MMM-pages', {
    * state (f.e. isRotating === true) equals the current state, print a warning
    * and do nothing.
    *
-   * @param {boolean} isRotating the parameter, if you want to pause or resume.
+   * @param {boolean} newState parameter, if you want to pause or resume.
    */
-  setRotation(isRotating) {
-    const stateBaseString = isRotating ? 'resum' : 'paus';
-    if (isRotating === this.rotationPaused) {
+  setRotation(newState) {
+    const stateBaseString = newState ? 'resum' : 'paus';
+    if (newState === this.rotationState) {
       Log.warn(`[MMM-pages] was asked to ${stateBaseString}e but rotation is already ${stateBaseString}ed!`);
     } else {
       Log.log(`[MMM-pages] ${stateBaseString}ing rotation`);
-      if (!isRotating) {
+      if (newState === this.inactive)  {
         if(this.timer){
           (this.config.pageTimeout.length ? clearTimeout : clearInterval)(this.timer);
           this.timer=null
@@ -321,7 +333,7 @@ Module.register('MMM-pages', {
       } else {
         this.resetTimerWithDelay(this.rotationDelay);
       }
-      this.rotationPaused = isRotating;
+      this.rotationState= newState;
     }
   },
 
