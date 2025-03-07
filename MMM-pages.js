@@ -21,10 +21,10 @@ Module.register('MMM-pages', {
     pageTimeout: []
   },
   inactive: false,
-  active: true, 
+  active: true,
   nodelay: 0,
-  savedLastPage:0,
-  timer:null,
+  savedLastPage: 0,
+  timer: null,
   /**
    * Apply any styles, if we have any.
    */
@@ -52,7 +52,7 @@ Module.register('MMM-pages', {
       this.config.homePage = 0;
     }
     this.curPage = this.config.homePage;
-    this.rotationState= this.inactive;
+    this.rotationState = this.inactive;
 
     // Compatibility
     if (this.config.excludes.length) {
@@ -97,7 +97,7 @@ Module.register('MMM-pages', {
     switch (notification) {
       case 'PAGE_CHANGED':
         Log.log(`[MMM-pages] received a notification to change to page ${payload} of type ${typeof payload}.`);
-        this.savedLastPage = this.curPage
+        this.savedLastPage = this.curPage;
         this.curPage = payload;
         this.updatePages();
         break;
@@ -185,13 +185,12 @@ Module.register('MMM-pages', {
       if (typeof this.curPage !== 'string') {
         this.animatePageChange();
         if (this.rotationState == this.inactive) {
-          this.resetTimerWithDelay(this.nodelay);  // was 0
+          this.resetTimerWithDelay(this.nodelay);
         }
         this.sendNotification('NEW_PAGE', this.curPage);
-      }
-      else {
+      } else {
         Log.error(`[MMM-pages] cannot change to a named page ${this.curPage}'`);
-        this.curPage = this.savedLastPage
+        this.curPage = this.savedLastPage;
       }
     } else { Log.error('[MMM-pages] Pages are not properly defined!'); }
   },
@@ -244,27 +243,27 @@ Module.register('MMM-pages', {
   resetTimerWithDelay(delay) {
     if (this.config.rotationTime > 0) {
       // This timer is the auto rotate function.
-      if(this.timer){
-        (this.config.pageTimeout.length?clearTimeout:clearInterval)(this.timer);
-        this.timer=null
+      if (this.timer) {
+        (this.config.pageTimeout.length ? clearTimeout : clearInterval)(this.timer);
+        this.timer = null;
       }
       // This is delay timer after manually updating.
-      if(this.delayTimer){
+      if (this.delayTimer) {
         clearTimeout(this.delayTimer);
-        this.delayTimer=null
+        this.delayTimer = null;
       }
-      let rotationTimeout=this.config.rotationTime
-      if(this.config.pageTimeout.length){
-        for(let pageInfo of this.config.pageTimeout){
-          if((pageInfo.pageNumber) -1 == this.curPage){
-            rotationTimeout= pageInfo.timeout
+      let rotationTimeout = this.config.rotationTime;
+      if (this.config.pageTimeout.length) {
+        for (let pageInfo of this.config.pageTimeout) {
+          if ((pageInfo.pageNumber) - 1 == this.curPage) {
+            rotationTimeout = pageInfo.timeout;
             break;
           }
         }
       }
       const self = this;
       this.delayTimer = setTimeout(() => {
-        self.timer = (this.config.pageTimeout.length?setTimeout:setInterval)(() => {
+        self.timer = (this.config.pageTimeout.length ? setTimeout : setInterval)(() => {
           // Inform other modules and page change.
           // MagicMirror automatically excludes the sender from receiving the
           // message, so we need to trigger it for ourselves.
@@ -274,29 +273,29 @@ Module.register('MMM-pages', {
       }, delay, this);
     } else if (this.config.rotationHomePage > 0) {
       // This timer is the auto rotate function.
-      if(this.timer){
-      (this.config.pageTimeout.length?clearTimeout:clearInterval)(this.timer);
-        this.timer = null
+      if (this.timer) {
+        (this.config.pageTimeout.length ? clearTimeout : clearInterval)(this.timer);
+        this.timer = null;
       }
       // This is delay timer after manually updating.
-      if(this.delayTimer){
+      if (this.delayTimer) {
         clearTimeout(this.delayTimer);
-        this.delayTimer=null
+        this.delayTimer = null;
       }
-      let rotationTimeout=this.config.rotationHomePage
-      if(this.config.pageTimeout.length){
-        for(let pageInfo of this.config.pageTimeout){
-          if((pageInfo.pagenumber) -1 == this.curPage){
-            rotationTimeout= pageInfo.timeout
+      let rotationTimeout = this.config.rotationHomePage;
+      if (this.config.pageTimeout.length) {
+        for (let pageInfo of this.config.pageTimeout) {
+          if ((pageInfo.pagenumber) - 1 == this.curPage) {
+            rotationTimeout = pageInfo.timeout;
             break;
           }
         }
       }
       const self = this;
       this.delayTimer = setTimeout(() => {
-        this.rotationState = this.active
-        this.delayTimer=null
-        self.timer = (this.config.pageTimeout.length?setTimeout:setInterval)(() => {
+        this.rotationState = this.active;
+        this.delayTimer = null;
+        self.timer = (this.config.pageTimeout.length ? setTimeout : setInterval)(() => {
           // Inform other modules and page change.
           // MagicMirror automatically excludes the sender from receiving the
           // message, so we need to trigger it for ourselves.
@@ -321,19 +320,19 @@ Module.register('MMM-pages', {
       Log.warn(`[MMM-pages] was asked to ${stateBaseString}e but rotation is already ${stateBaseString}ed!`);
     } else {
       Log.log(`[MMM-pages] ${stateBaseString}ing rotation`);
-      if (newState === this.inactive)  {
-        if(this.timer){
+      if (newState === this.inactive) {
+        if (this.timer) {
           (this.config.pageTimeout.length ? clearTimeout : clearInterval)(this.timer);
-          this.timer=null
+          this.timer = null;
         }
-        if(this.delayTimer){
+        if (this.delayTimer) {
           clearTimeout(this.delayTimer);
-          this.delayTimer=null
+          this.delayTimer = null;
         }
       } else {
         this.resetTimerWithDelay(this.rotationDelay);
       }
-      this.rotationState= newState;
+      this.rotationState = newState;
     }
   },
 
