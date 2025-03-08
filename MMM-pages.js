@@ -125,10 +125,10 @@ Module.register('MMM-pages', {
         this.sendNotification('PAGE_NUMBER_IS', this.curPage);
         break;
       case 'PAUSE_ROTATION':
-        this.setRotation(false);
+        this.setRotation(this.inactive);
         break;
       case 'RESUME_ROTATION':
-        this.setRotation(true);
+        this.setRotation(this.active);
         break;
       case 'HOME_PAGE':
         this.notificationReceived('PAGE_CHANGED', this.config.homePage);
@@ -269,6 +269,7 @@ Module.register('MMM-pages', {
         }
       }
       const self = this;
+      this.rotationState = this.active;
       this.delayTimer = setTimeout(() => {
         self.timer = (this.config.pageTimeout.length ? setTimeout : setInterval)(() => {
           // Inform other modules and page change.
@@ -299,8 +300,9 @@ Module.register('MMM-pages', {
         }
       }
       const self = this;
+      this.rotationState = this.active;
+      Log.log(`[MMM-pages] resuming rotation 2`);
       this.delayTimer = setTimeout(() => {
-        this.rotationState = this.active;
         this.delayTimer = null;
         self.timer = (this.config.pageTimeout.length ? setTimeout : setInterval)(() => {
           // Inform other modules and page change.
