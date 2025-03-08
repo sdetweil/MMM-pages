@@ -174,7 +174,10 @@ Module.register('MMM-pages', {
       );
     }
   },
-
+  // checks if a string is numeric characters only
+  isNumeric(str) {
+   return /^\d+$/.test(str);
+  }, 
   /**
    * Handles hiding the current page's elements and showing the next page's
    * elements.
@@ -182,12 +185,17 @@ Module.register('MMM-pages', {
   updatePages() {
     // Update if there's at least one page.
     if (this.config.modules.length !== 0) {
-      if (typeof this.curPage !== 'string') {
-        this.animatePageChange();
-        if (this.rotationState == this.inactive) {
-          this.resetTimerWithDelay(this.nodelay);
+      
+      if (typeof this.curPage !== 'string' || (this.isNumeric(this.curPage))) {
+        if (parseInt(this.curPage) < this.config.modules.length){
+          this.animatePageChange();
+          if (this.rotationState == this.inactive) {
+            this.resetTimerWithDelay(this.nodelay);
+          }
+          this.sendNotification('NEW_PAGE', this.curPage);
+        } else {
+          Log.error(`[MMM-pages] cannot change to page number ${this.curPage}, out of range`);
         }
-        this.sendNotification('NEW_PAGE', this.curPage);
       } else {
         Log.error(`[MMM-pages] cannot change to a named page ${this.curPage}'`);
         this.curPage = this.savedLastPage;
