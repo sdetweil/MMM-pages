@@ -154,10 +154,12 @@
           "type": "array",
           "title": "modules (aka pages)",
           "key": "MMM-pages.config.modules[]",
+          "draggable":false,
           "items": [
             {
               "type": "array",
               "title": "page {{idx}} module names (or classes)",
+              "draggable":false,
               "items": [
                 {
                   "notitle": true,
@@ -171,6 +173,7 @@
           "type": "array",
           "title": "excludes",
           "deleteCurrent": false,
+          "draggable":false,
           "items": [
             {
               "title": "excludes {{idx}}",
@@ -182,6 +185,7 @@
           "type": "array",
           "title": "fixed",
           "deleteCurrent": false,
+          "draggable":false,
           "items": [
             {
               "title": "fixed {{idx}}",
@@ -193,6 +197,7 @@
           "type": "array",
           "title": "hiddenPages",
           "deleteCurrent": false,
+          "draggable":false,
           "items": [
             {
               "key": "MMM-pages.config.hiddenPages[]",
@@ -232,6 +237,7 @@
           "type": "array",
           "title": "pageTimeout",
           "deleteCurrent": false,
+          "draggable":false,
           "items": {
             "type": "fieldset",
             "title": "pageTimeout",
